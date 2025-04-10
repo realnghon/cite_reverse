@@ -205,9 +205,19 @@ def process_entry(entry, output_file):
 
     with open(output_file, "a", encoding="utf-8") as f_out:
         if dblp_entry:
-            print(f"  找到DBLP匹配: 替换条目")
-            new_entry = replace_entry_with_dblp(entry, dblp_entry)
-            f_out.write(new_entry + "\n\n")
+            # 检查DBLP返回的条目是否包含eprinttype = {arXiv}
+            is_arxiv_in_dblp = re.search(
+                r"eprinttype\s*=\s*\{\s*arXiv\s*\}", dblp_entry, re.IGNORECASE
+            )
+
+            if is_arxiv_in_dblp:
+                print(f"  找到DBLP匹配，但仍是arXiv预印本: 保留原条目并添加注释")
+                comment = f"% 在DBLP中找到匹配的条目，但该文献在DBLP上也是预印本，未正式发表，所以保留原条目。\n"
+                f_out.write(comment + entry + "\n\n")
+            else:
+                print(f"  找到DBLP匹配: 替换条目")
+                new_entry = replace_entry_with_dblp(entry, dblp_entry)
+                f_out.write(new_entry + "\n\n")
         else:
             print(f"  未找到DBLP匹配: 保留原条目并添加注释")
             # 添加注释说明未找到匹配
@@ -240,4 +250,4 @@ def main(input_file="test.bib", output_file="test_new.bib"):
 
 
 if __name__ == "__main__":
-    main(input_file="cite.bib", output_file="cite_new.bib")
+    main(input_file="cite.bib", output_file="cite_dblp.bib")

@@ -9,6 +9,7 @@
 - 保留原始引用标识符(cite_key)，仅替换内容
 - 智能控制请求频率，避免被DBLP限制访问
 - 对未找到匹配的条目添加警告注释并保留原始条目
+- 智能识别DBLP中仍是arXiv预印本的文献，保留原条目并添加注释说明
 
 ## 安装依赖
 
@@ -20,9 +21,9 @@ pip install requests beautifulsoup4
 
 默认使用：
 ```bash
-python cite_reverse.py
+python cite_reverse_dblp.py
 ```
-默认读取`cite.bib`文件并生成`cite_new.bib`作为输出。
+默认读取`cite.bib`文件并生成`cite_dblp.bib`作为输出。
 
 自定义输入输出文件：
 ```python
@@ -64,4 +65,5 @@ if __name__ == "__main__":
 
 - 程序可能不总是找到完全匹配的条目，建议手动检查替换结果
 - 处理大型BibTeX文件可能需要较长时间，因为需要限制请求频率
-- 如果频繁使用可能会被DBLP暂时限制访问，此时需等待一段时间后再试 
+- 如果频繁使用可能会被DBLP暂时限制访问，此时需等待一段时间后再试
+- 对于DBLP中仍是预印本的论文，程序会保留原始条目并添加说明注释 
